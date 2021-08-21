@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Ejercicio DOM</title>
+</head>
+<body>
+  <div id="app">
+    <h1>
+      Mis Cursos de Platzi💚
+    </h1>
+      <p>
+        <input 
+          type="text" 
+          placeholder="Titulo del curso"
+          v-model="title"
+        />
+      </p>
+      <p>
+        <input 
+          type="number" 
+          placeholder="Horas"
+          v-model="time"
+        />
+      </p>
+      <p>
+        <button v-on:click="addCourse" >Guardar Curso</button>
+      </p>
+    </fieldset>
+    <div>
+      <h3>Lista de Cursos</h3>
+      <div>
+        <ol>
+          <!-- Lista de cursos -->
+          <li v-for="(c, i) in courses" v-bind:key="i">
+            {{ c.title }} - {{ c.time }}
+          </li>
+        </ol>
+        <hr/>
+				<p v-show='courses.length === 0' >No existen Cursos</p>
+        <p v-show='courses.length !== 0' >
+          Llevo <strong>{{ totalTime }}</strong> horas aprendiendo en Platzi.
+          <b>#NuncaParesDeAprender 💚</b>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+	<script src="ejercicio-dom.js"></script>
+</body>
+</html>

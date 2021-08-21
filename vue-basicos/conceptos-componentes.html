@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vue Basicos</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div id="app" v-bind:style="{background: '#' + color}">
+      <!-- Two-Way Data Binding -->
+
+      <input type="number" v-model="value" />
+      <span>{{ convertedValue }}</span>
+
+      <!-- Clases en tiempo Real -->
+      <h2>Componentes</h2>
+      <!-- <img
+        v-on:mouseover="toggleShowPrices"
+        v-on:mouseout="toggleShowPrices"
+        v-bind:src="img"
+        v-bind:alt="name"
+      /> -->
+      <coin-detail
+				v-on:change-color="updateColor"
+        v-bind:img="img"
+        v-bind:name="name"
+        v-bind:title="title"
+        v-bind:change-percent="changePercent"
+      >
+
+				<template v-slot:text>
+					<h2>hello</h2>
+					<p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Autem hic nam non, tempore ipsam impedit quasi neque maiores deleniti eligendi quibusdam nemo, perspiciatis voluptatum molestiae iste, odio aperiam quae itaque!</p>
+				</template>
+
+				<template v-slot:link>
+					<a href="#">link!</a>
+				</template>
+
+			</coin-detail>
+      <!-- <h1 v-bind:class="changePercent > 0 ? 'green': 'red'">
+			{{ title }}
+			<span v-if='changePercent > 0'>Boomm Boomm !!!</span>
+			<span v-else-if='changePercent < 0'>Boom !!!</span>
+			<span v-else>No Boom !!!</span>
+		</h1> -->
+
+      <ul v-show="showPrices">
+        <li
+          v-bind:class="{ orange: p.value === price, red: p.value < price, green: p.value > price }"
+          v-for="(p, i) in pricesWhitDays"
+          v-bind:key="i"
+        >
+          {{ i }} - {{ p.day }} - {{ p.value }}
+        </li>
+      </ul>
+
+      <!-- Manejo de Eventos -->
+      <img
+        v-on:mouseover="toggleShowPrices"
+        v-on:mouseout="toggleShowPrices"
+        v-bind:src="img"
+        v-bind:alt="name"
+      />
+
+      <button v-on:click="toggleShowPrices">
+        {{ showPrices ? 'ocultar': 'mostrar' }}
+      </button>
+
+      <ul v-show="showPrices">
+        <li v-for="(p, i) in pricesWhitDays" v-bind:key="i">
+          {{ i }} - {{ p.day }} - {{ p.value }}
+        </li>
+      </ul>
+      <hr />
+
+      <!-- Renderizado de Listas -->
+      <ul>
+        <li v-for="(p,i) in prices" v-bind:key="i">{{ i }} - {{ p }}</li>
+      </ul>
+
+      <ul>
+        <li v-for="(p, i) in pricesWhitDays" v-bind:key="i">
+          {{ i }} - {{ p.day }} - {{ p.value }}
+        </li>
+      </ul>
+      <hr />
+
+      <!-- directivas de Vue -->
+      <img v-bind:src="img" v-bind:alt="name" />
+      <h1>
+        {{ name }}
+        <!-- Control de flujo con directivas -->
+        <span v-if="changePercent > 0">Boomm Boomm !!!</span>
+        <span v-else-if="changePercent < 0">Boom !!!</span>
+        <span v-else>No Boom !!!</span>
+
+        <span v-show="changePercent > 0">Boomm Boomm !!!</span>
+        <span v-show="changePercent < 0">Boom !!!</span>
+        <span v-show="changePercent === 0">No Boom !!!</span>
+      </h1>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <script src="conceptos-componentes.js"></script>
+  </body>
+</html>
