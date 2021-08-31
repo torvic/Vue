@@ -1,6 +1,9 @@
 <template>
   <div class="flex-col">
-    <template v-if="asset.id">
+    <div class="flex justify-center">
+      <bounce-loader :loading="isLoading" :color="'#68d391'" :size="100" />
+    </div>
+    <template v-if="!isLoading && asset.id">
       <div class="flex flex-col sm:flex-row justify-around items-center">
         <div class="flex flex-col items-center">
           <img
@@ -83,19 +86,60 @@
           <span class="text-xl"></span>
         </div>
       </div>
+
+      <line-chart
+        class="my-10"
+        :colors="['orange']"
+        :min="min"
+        :max="max"
+        :data="
+          history.map((el) => [el.date, parseFloat(el.priceUsd).toFixed(2)])
+        "
+      />
+      <h3 class="text-xl my-10">Mejores Ofertas de Cambio</h3>
+      <table>
+        <tr
+          v-for="m in markets"
+          :key="`${m.exchangeId}-${m.priceUsd}`"
+          class="border-b"
+        >
+          <td>
+            <b>{{ m.exchangeId }}</b>
+          </td>
+          <td>{{ m.priceUsd | dollar }}</td>
+          <td>{{ m.baseSymbol }} / {{ m.quoteSymbol }}</td>
+          <td>
+            <px-button
+              :is-loading="m.isLoading || false"
+              v-if="!m.url"
+              @custom-click="getWebSite(m)"
+            >
+              <slot>Obtener Link</slot>
+            </px-button>
+
+            <a v-else class="hover:underline text-green-600" target="_blanck">{{
+              m.url
+            }}</a>
+          </td>
+        </tr>
+      </table>
     </template>
   </div>
 </template>
 
 <script>
 import api from '@/api'
+import PxButton from '@/components/PxButton'
 
 export default {
   name: 'coinDetail',
+  components: { PxButton },
   data() {
     return {
+      isLoading: false,
       asset: {},
       history: [],
+      markets: [],
     }
   },
   computed: {
@@ -121,14 +165,29 @@ export default {
   },
 
   methods: {
+    getWebSite(exchange) {
+      this.$set(exchange, 'isLoading', true)
+      return api
+        .getExchange(exchange.exchangeId)
+        .then((res) => {
+          this.$set(exchange, 'url', res.exchangeUrl)
+        })
+        .finally(() => this.$set(exchange, 'isLoading', false))
+    },
     getCoin() {
       const id = this.$route.params.id
-      Promise.all([api.getAsset(id), api.getAssetHistory(id)]).then(
-        ([asset, history]) => {
+      this.isLoading = true
+      Promise.all([
+        api.getAsset(id),
+        api.getAssetHistory(id),
+        api.getMarkets(id),
+      ])
+        .then(([asset, history, markets]) => {
           this.asset = asset
           this.history = history
-        }
-      )
+          this.markets = markets
+        })
+        .finally(() => (this.isLoading = false))
     },
   },
 }
